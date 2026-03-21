@@ -84,110 +84,115 @@ export default function WritePost() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="flex-1 w-full">
             <Navbar />
-            <div className="max-w-3xl mx-auto px-6 py-8">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">
-                    {editId ? 'Edit Post' : 'Write a Post'}
-                </h1>
+            <div className="max-w-4xl mx-auto px-6 py-10 animate-fade-in">
+                <div className="glass p-8 md:p-12 rounded-3xl relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-fuchsia-500 via-purple-500 to-indigo-500 opacity-90"></div>
+                    
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-8 tracking-tight">
+                        {editId ? 'Edit Post' : 'Write a Story'}
+                    </h1>
 
-                {error && (
-                    <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-4 text-sm">
-                        {error}
-                    </div>
-                )}
+                    {error && (
+                        <div className="bg-red-50/80 border border-red-200 text-red-600 p-4 rounded-xl mb-8 flex items-center gap-3 font-medium">
+                            <span className="text-xl">⚠️</span> {error}
+                        </div>
+                    )}
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                        {/* Title */}
+                        <div>
+                            <label className="text-sm font-semibold text-slate-300 mb-2 block">Title</label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={form.title}
+                                onChange={handleChange}
+                                required
+                                placeholder="Enter a captivating title..."
+                                className="w-full glass-input text-lg py-3"
+                            />
+                        </div>
 
-                    {/* Title */}
-                    <div>
-                        <label className="text-sm text-gray-600 mb-1 block">Title</label>
-                        <input
-                            type="text"
-                            name="title"
-                            value={form.title}
-                            onChange={handleChange}
-                            required
-                            placeholder="Enter your post title..."
-                            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-orange-400"
-                        />
-                    </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Cover Image */}
+                            <div>
+                                <label className="text-sm font-semibold text-slate-300 mb-2 block">
+                                    Cover Image URL <span className="text-slate-500 font-normal">(optional)</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="coverImage"
+                                    value={form.coverImage}
+                                    onChange={handleChange}
+                                    placeholder="https://example.com/image.jpg"
+                                    className="w-full glass-input py-3"
+                                />
+                            </div>
 
-                    {/* Cover Image */}
-                    <div>
-                        <label className="text-sm text-gray-600 mb-1 block">
-                            Cover Image URL (optional)
-                        </label>
-                        <input
-                            type="text"
-                            name="coverImage"
-                            value={form.coverImage}
-                            onChange={handleChange}
-                            placeholder="https://example.com/image.jpg"
-                            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-orange-400"
-                        />
-                    </div>
+                            {/* Genre */}
+                            <div>
+                                <label className="text-sm font-semibold text-slate-300 mb-2 block">Genre</label>
+                                <select
+                                    name="genre"
+                                    value={form.genre}
+                                    onChange={handleChange}
+                                    className="w-full glass-input py-3 cursor-pointer [&>option]:bg-slate-800">
+                                    {genres.map(g => (
+                                        <option key={g} value={g}>{g}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
 
-                    {/* Genre */}
-                    <div>
-                        <label className="text-sm text-gray-600 mb-1 block">Genre</label>
-                        <select
-                            name="genre"
-                            value={form.genre}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-orange-400">
-                            {genres.map(g => (
-                                <option key={g} value={g}>{g}</option>
-                            ))}
-                        </select>
-                    </div>
+                        {/* Content */}
+                        <div>
+                            <label className="text-sm font-semibold text-slate-300 mb-2 block">Content</label>
+                            <textarea
+                                name="content"
+                                value={form.content}
+                                onChange={handleChange}
+                                required
+                                rows={14}
+                                placeholder="Write your story here... HTML formatting is supported."
+                                className="w-full glass-input py-4 text-base resize-y min-h-[300px]"
+                            />
+                        </div>
 
-                    {/* Content */}
-                    <div>
-                        <label className="text-sm text-gray-600 mb-1 block">Content</label>
-                        <textarea
-                            name="content"
-                            value={form.content}
-                            onChange={handleChange}
-                            required
-                            rows={12}
-                            placeholder="Write your blog post here..."
-                            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-orange-400 resize-none"
-                        />
-                    </div>
+                        {/* Anonymous */}
+                        <div className="flex items-center gap-3 mt-2 bg-slate-800/50 p-4 rounded-xl border border-white/10 w-max">
+                            <input
+                                type="checkbox"
+                                name="isAnonymous"
+                                id="isAnonymous"
+                                checked={form.isAnonymous}
+                                onChange={handleChange}
+                                className="w-5 h-5 rounded text-indigo-500 focus:ring-indigo-500 cursor-pointer bg-slate-700 border-white/10"
+                            />
+                            <label htmlFor="isAnonymous" className="text-sm font-medium text-slate-300 cursor-pointer select-none">
+                                Post anonymously
+                            </label>
+                        </div>
 
-                    {/* Anonymous */}
-                    <div className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            name="isAnonymous"
-                            id="isAnonymous"
-                            checked={form.isAnonymous}
-                            onChange={handleChange}
-                            className="w-4 h-4"
-                        />
-                        <label htmlFor="isAnonymous" className="text-sm text-gray-600">
-                            Post anonymously
-                        </label>
-                    </div>
-
-                    {/* Buttons */}
-                    <div className="flex gap-3">
-                        <button
-                            type="button"
-                            onClick={handleSaveDraft}
-                            disabled={loading}
-                            className="px-6 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 hover:border-orange-400">
-                            Save as Draft
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="bg-orange-500 text-white px-6 py-2 rounded-lg text-sm hover:bg-orange-600">
-                            {loading ? 'Publishing...' : editId ? 'Update Post' : 'Publish Post'}
-                        </button>
-                    </div>
-                </form>
+                        {/* Buttons */}
+                        <div className="flex flex-wrap gap-4 mt-8 pt-6 border-t border-white/10">
+                            <button
+                                type="button"
+                                onClick={handleSaveDraft}
+                                disabled={loading}
+                                className="btn-glass px-8 py-3 text-base">
+                                Save as Draft
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="btn-gradient px-8 py-3 text-base">
+                                {loading ? 'Publishing...' : editId ? 'Update Post' : 'Publish Post'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     )

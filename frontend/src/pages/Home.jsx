@@ -82,31 +82,35 @@ export default function Home() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="flex-1 w-full">
             <Navbar />
-            <div className="max-w-6xl mx-auto px-6 py-8">
-                <div className="flex justify-between items-center mb-8">
+            <div className="max-w-6xl mx-auto px-6 py-10 animate-fade-in">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 glass p-8 rounded-3xl relative overflow-hidden group">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-800">
-                            Discover Stories
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">
+                            Discover <span className="text-gradient">Stories</span>
                         </h1>
-                        <p className="text-gray-500 mt-1">
+                        <p className="text-slate-300 text-lg font-medium">
                             Read and share blogs from writers around the world
                         </p>
                     </div>
                     <button
                         onClick={handleSurpriseMe}
-                        className="bg-orange-500 text-white px-5 py-2 rounded-lg hover:bg-orange-600 text-sm">
-                        Surprise Me
+                        className="btn-gradient shadow-indigo-500/25 px-6 py-3 text-base flex items-center gap-2">
+                        <span>🎲</span> Surprise Me
                     </button>
                 </div>
 
                 {featured.length > 0 && (
-                    <div className="mb-8">
-                        <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                            Featured Posts
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="mb-12">
+                        <div className="flex items-center gap-2 mb-6">
+                            <span className="text-2xl animate-bounce">🔥</span>
+                            <h2 className="text-2xl font-bold text-white">
+                                Featured Posts
+                            </h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {featured.map(post => (
                                 <BlogCard key={post.id} post={post} />
                             ))}
@@ -114,20 +118,30 @@ export default function Home() {
                     </div>
                 )}
 
-                <SearchBar onSearch={handleSearch} />
-
-                <GenreFilter
-                    selected={selectedGenre}
-                    onSelect={handleGenreSelect}
-                />
+                <div className="mb-10">
+                    <div className="flex items-center gap-2 mb-6">
+                        <span className="text-2xl">✨</span>
+                        <h2 className="text-2xl font-bold text-white">
+                            Explore
+                        </h2>
+                    </div>
+                    <SearchBar onSearch={handleSearch} />
+                    <GenreFilter
+                        selected={selectedGenre}
+                        onSelect={handleGenreSelect}
+                    />
+                </div>
 
                 {loading ? (
-                    <div className="text-center text-gray-400 py-20">
-                        Loading posts...
+                    <div className="flex flex-col items-center justify-center py-20 opacity-70">
+                        <div className="w-10 h-10 border-4 border-fuchsia-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p className="text-indigo-600 font-medium animate-pulse">Loading amazing posts...</p>
                     </div>
                 ) : posts.length === 0 ? (
-                    <div className="text-center text-gray-400 py-20">
-                        No posts found
+                    <div className="glass-card text-center py-20 flex flex-col items-center justify-center">
+                        <span className="text-6xl mb-4 opacity-50">📭</span>
+                        <h3 className="text-xl font-bold text-slate-200 mb-2">No posts found</h3>
+                        <p className="text-slate-400">Try adjusting your search or genre filters.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

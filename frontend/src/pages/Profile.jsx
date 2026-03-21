@@ -30,43 +30,51 @@ export default function Profile() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="flex-1 w-full">
             <Navbar />
-            <div className="max-w-4xl mx-auto px-6 py-8">
-
+            <div className="max-w-4xl mx-auto px-6 py-10 animate-fade-in">
                 {/* Profile Header */}
-                <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
-                    <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 text-2xl font-bold">
+                <div className="glass p-8 rounded-3xl mb-12 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/20 rounded-bl-full -mr-8 -mt-8"></div>
+                    <div className="flex items-center gap-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-fuchsia-500 rounded-2xl flex items-center justify-center text-white text-3xl font-extrabold shadow-lg shadow-indigo-500/30 transform group-hover:rotate-3 transition-transform">
                             {user?.name?.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-gray-800">
+                            <h1 className="text-2xl font-extrabold text-white tracking-tight">
                                 {user?.name}
                             </h1>
-                            <p className="text-gray-500 text-sm">{user?.email}</p>
+                            <p className="text-slate-400 font-medium">{user?.email}</p>
                             {user?.bio && (
-                                <p className="text-gray-600 text-sm mt-1">{user?.bio}</p>
+                                <p className="text-slate-300 mt-2">{user?.bio}</p>
                             )}
                         </div>
                     </div>
                 </div>
 
                 {/* User Posts */}
-                <h2 className="text-lg font-semibold text-gray-700 mb-4">
-                    My Posts ({posts.length})
-                </h2>
+                <div className="flex items-center gap-3 mb-6">
+                    <span className="text-2xl">📝</span>
+                    <h2 className="text-2xl font-bold text-white">
+                        My Posts <span className="text-indigo-400 font-medium text-lg">({posts.length})</span>
+                    </h2>
+                </div>
 
                 {loading ? (
-                    <div className="text-center text-gray-400 py-20">
-                        Loading...
+                    <div className="flex flex-col items-center justify-center py-20 opacity-70">
+                        <div className="w-10 h-10 border-4 border-fuchsia-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p className="text-indigo-600 font-medium animate-pulse">
+                            Loading your stories...
+                        </p>
                     </div>
                 ) : posts.length === 0 ? (
-                    <div className="text-center text-gray-400 py-20">
-                        <p>You haven't written any posts yet</p>
+                    <div className="glass-card text-center py-16 flex flex-col items-center justify-center">
+                        <span className="text-6xl mb-4 opacity-70">✍️</span>
+                        <h3 className="text-xl font-bold text-white mb-2">No posts yet</h3>
+                        <p className="text-slate-400 mb-6">You haven't shared any stories with the community yet.</p>
                         <button
                             onClick={() => navigate('/write')}
-                            className="mt-4 bg-orange-500 text-white px-6 py-2 rounded-lg text-sm hover:bg-orange-600">
+                            className="btn-gradient">
                             Write your first post
                         </button>
                     </div>

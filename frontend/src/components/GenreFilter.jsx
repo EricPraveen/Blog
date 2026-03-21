@@ -11,10 +11,10 @@ export default function GenreFilter({ selected, onSelect }) {
                 <button
                     key={genre}
                     onClick={() => onSelect(genre)}
-                    className={`px-4 py-2 rounded-full text-sm border transition
+                    className={`px-5 py-2 rounded-full text-sm font-medium backdrop-blur-sm transition-all duration-300
                         ${selected === genre
-                            ? 'bg-orange-500 text-white border-orange-500'
-                            : 'bg-white text-gray-600 border-gray-300 hover:border-orange-400'
+                            ? 'bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-md shadow-indigo-500/20 border-transparent'
+                            : 'bg-slate-800/50 text-slate-300 border border-white/10 hover:bg-slate-700/80 hover:border-indigo-400/50 hover:text-white hover:shadow-sm'
                         }`}>
                     {genre}
                 </button>

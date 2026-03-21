@@ -15,11 +15,11 @@ export default function SearchBar({ onSearch }) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search posts..."
-                className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-orange-400"
+                className="flex-1 glass-input focus:ring-fuchsia-400 placeholder:text-slate-500"
             />
             <button
                 type="submit"
-                className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-600">
+                className="btn-gradient px-6 py-2">
                 Search
             </button>
         </form>
