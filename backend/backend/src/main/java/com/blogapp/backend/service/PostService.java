@@ -127,6 +127,9 @@ public class PostService {
         response.setIsFeatured(post.getIsFeatured());
         response.setCreatedAt(post.getCreatedAt());
         response.setLikeCount(likeRepository.countByPostId(post.getId()));
+        
+        response.setAuthorId(post.getAuthor().getId());
+        response.setAuthorEmail(post.getAuthor().getEmail());
 
         if (post.getIsAnonymous()) {
             response.setAuthorName("Anonymous");

@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext'
 
 const genres = [
     'Technology', 'Travel', 'Food', 'Lifestyle',
-    'Fiction', 'Opinion', 'Health', 'Finance', 'Gaming', 'Culture'
+    'Fiction', 'Opinion', 'Health', 'Finance', 'Gaming', 'Culture', 'Else'
 ]
 
 export default function WritePost() {

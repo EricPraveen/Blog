@@ -26,20 +26,28 @@ public class AuthService {
             throw new RuntimeException("Email already exists");
         }
 
+        if (request.getUsername() != null && userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setUsername(request.getUsername());
+        user.setGender(request.getGender());
+        user.setCountry(request.getCountry());
+        user.setDateOfBirth(request.getDateOfBirth());
         user.setRole("user");
 
         userRepository.save(user);
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
-        return new AuthResponse(token, user.getRole(), user.getName(), user.getEmail());
+        return new AuthResponse(user.getId(), token, user.getRole(), user.getName(), user.getEmail());
     }
 
     public AuthResponse login(AuthRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByUsernameOrEmail(request.getUsername(), request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -47,6 +55,6 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
-        return new AuthResponse(token, user.getRole(), user.getName(), user.getEmail());
+        return new AuthResponse(user.getId(), token, user.getRole(), user.getName(), user.getEmail());
     }
 }

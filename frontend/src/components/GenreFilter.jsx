@@ -1,7 +1,7 @@
 const genres = [
     'All', 'Technology', 'Travel', 'Food',
     'Lifestyle', 'Fiction', 'Opinion',
-    'Health', 'Finance', 'Gaming', 'Culture'
+    'Health', 'Finance', 'Gaming', 'Culture', 'Else'
 ]
 
 export default function GenreFilter({ selected, onSelect }) {

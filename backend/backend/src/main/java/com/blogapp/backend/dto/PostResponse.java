@@ -10,7 +10,9 @@ public class PostResponse {
     private String content;
     private String coverImage;
     private String genre;
+    private Long authorId;
     private String authorName;
+    private String authorEmail;
     private String status;
     private Boolean isAnonymous;
     private Boolean isFeatured;

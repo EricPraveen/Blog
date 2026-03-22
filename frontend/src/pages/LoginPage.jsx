@@ -4,7 +4,7 @@ import { login } from '../services/authService'
 import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
-    const [form, setForm] = useState({ email: '', password: '' })
+    const [form, setForm] = useState({ usernameOrEmail: '', password: '' })
     const [error, setError] = useState('')
     const { loginUser } = useAuth()
     const navigate = useNavigate()
@@ -16,7 +16,12 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const data = await login(form)
+            const payload = {
+                email: form.usernameOrEmail,
+                username: form.usernameOrEmail,
+                password: form.password
+            }
+            const data = await login(payload)
             loginUser(data)
             navigate('/')
         } catch (err) {
@@ -50,16 +55,16 @@ export default function Login() {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                     <div>
                         <label className="text-sm font-semibold text-slate-300 mb-2 block">
-                            Email address
+                            Username or Email
                         </label>
                         <input
-                            type="email"
-                            name="email"
-                            value={form.email}
+                            type="text"
+                            name="usernameOrEmail"
+                            value={form.usernameOrEmail}
                             onChange={handleChange}
                             required
                             className="w-full glass-input text-base py-3"
-                            placeholder="you@example.com"
+                            placeholder="username or you@example.com"
                         />
                     </div>
                     <div>

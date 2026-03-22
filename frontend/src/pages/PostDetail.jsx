@@ -5,6 +5,7 @@ import { getPostById } from '../services/postService'
 import { toggleBookmark } from '../services/bookmarkService'
 import { useAuth } from '../context/AuthContext'
 import axios from 'axios'
+import { getGenreColor } from '../utils/genreColors'
 
 export default function PostDetail() {
     const { id } = useParams()
@@ -96,7 +97,7 @@ export default function PostDetail() {
             <div className="max-w-3xl mx-auto px-6 py-10 animate-fade-in">
                 <div className="glass p-8 rounded-3xl">
                     {/* Genre */}
-                    <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs px-4 py-1.5 rounded-full font-medium inline-block mb-4">
+                    <span className={`${getGenreColor(post.genre)} border text-xs px-4 py-1.5 rounded-full font-medium inline-block mb-4`}>
                         {post.genre}
                     </span>
 
@@ -156,7 +157,10 @@ export default function PostDetail() {
                             {bookmarked ? '🔖 Saved' : '🔖 Save'}
                         </button>
 
-                        {user && user.email === post.authorEmail && (
+                        {user && (
+                            (user.email && post.authorEmail && user.email === post.authorEmail) ||
+                            (user.id && post.authorId && user.id === post.authorId)
+                        ) && (
                             <div className="flex gap-4 ml-auto">
                                 <button
                                     onClick={() => navigate(`/write?edit=${post.id}`)}
