@@ -45,14 +45,19 @@ public class PostController {
     public ResponseEntity<List<PostResponse>> getFeaturedPosts() {
         return ResponseEntity.ok(postService.getFeaturedPosts());
     }
-
+    @GetMapping("/drafts")
+    public ResponseEntity<List<PostResponse>> getDrafts(Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(postService.getDraftsByUser(authentication.getName()));
+    }
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
             @RequestBody PostRequest request,
             Authentication authentication) {
         return ResponseEntity.ok(postService.createPost(request, authentication.getName()));
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long id,
@@ -60,7 +65,6 @@ public class PostController {
             Authentication authentication) {
         return ResponseEntity.ok(postService.updatePost(id, request, authentication.getName()));
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(
             @PathVariable Long id,

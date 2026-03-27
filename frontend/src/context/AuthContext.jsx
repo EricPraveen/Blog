@@ -9,9 +9,17 @@ export const AuthProvider = ({ children }) => {
     })
 
     const loginUser = (userData) => {
+        if (!userData || !userData.token) {
+            console.error('Login error: Missing token in userData', userData)
+            return
+        }
+        console.log('Login successful, storing token and user data')
         localStorage.setItem('token', userData.token)
         localStorage.setItem('user', JSON.stringify(userData))
         setUser(userData)
+        // Verify token was stored
+        const storedToken = localStorage.getItem('token')
+        console.log('Token stored and verified:', !!storedToken)
     }
 
     const logoutUser = () => {

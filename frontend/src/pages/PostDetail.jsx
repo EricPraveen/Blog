@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { getPostById } from '../services/postService'
 import { toggleBookmark } from '../services/bookmarkService'
@@ -109,9 +109,15 @@ export default function PostDetail() {
                     {/* Author & Date */}
                     <div className="flex items-center gap-4 text-sm text-slate-400 mb-8 font-medium">
                         <span className="flex items-center gap-1">
-                            <span className="text-lg">✍️</span> 
-                            {post.isAnonymous ? 'Anonymous' : post.authorName}
-                        </span>
+                    <span className="text-lg">✍️</span>
+                    {post.isAnonymous ? 'Anonymous' : (
+                        <Link
+                            to={`/user/${post.authorId}`}
+                            className="hover:text-indigo-400 transition-colors">
+                            {post.authorName}
+                        </Link>
+                    )}
+                    </span>
                         <span className="flex items-center gap-1">
                             <span className="text-lg">📅</span> 
                             {new Date(post.createdAt).toLocaleDateString()}

@@ -66,6 +66,13 @@ public class PostService {
                 .stream().map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
+    public List<PostResponse> getDraftsByUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return postRepository.findByAuthorIdAndStatus(user.getId(), "draft")
+                .stream().map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
 
     public PostResponse getRandomPost() {
         List<Post> posts = postRepository.findByStatus("published");
@@ -131,7 +138,7 @@ public class PostService {
         response.setAuthorId(post.getAuthor().getId());
         response.setAuthorEmail(post.getAuthor().getEmail());
 
-        if (post.getIsAnonymous()) {
+        if (Boolean.TRUE.equals(post.getIsAnonymous())) {
             response.setAuthorName("Anonymous");
         } else {
             response.setAuthorName(post.getAuthor().getName());

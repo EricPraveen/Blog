@@ -7,7 +7,8 @@ import WritePost from './pages/WritePost'
 import Profile from './pages/Profile'
 import Bookmarks from './pages/Bookmarks'
 import AdminDashboard from './pages/AdminDashboard'
-
+import EditProfile from './pages/EditProfile'
+import UserProfile from './pages/UserProfile'
 function App() {
     return (
         <Router>
@@ -20,6 +21,9 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/bookmarks" element={<Bookmarks />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/edit-profile" element={<EditProfile />} />
+                <Route path="/user/:id" element={<UserProfile />} />
+                
             </Routes>
         </Router>
     )

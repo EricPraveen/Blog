@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
 import BlogCard from '../components/BlogCard'
 import GenreFilter from '../components/GenreFilter'
@@ -13,7 +14,14 @@ import {
 } from '../services/postService'
 
 export default function Home() {
+    const { user } = useAuth()
     const [posts, setPosts] = useState([])
+
+    const getFormattedFullName = () => {
+        if (!user) return 'Stories'
+        const rawName = user.name || user.email?.split('@')[0] || 'User'
+        return rawName.charAt(0).toUpperCase() + rawName.slice(1)
+    }
     const [featured, setFeatured] = useState([])
     const [selectedGenre, setSelectedGenre] = useState('All')
     const [loading, setLoading] = useState(true)
@@ -89,10 +97,10 @@ export default function Home() {
                     <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div>
                         <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">
-                            Discover <span className="text-gradient">Stories</span>
+                            {user ? `Welcome, ` : 'Discover '}<span className="text-gradient">{getFormattedFullName()}</span>
                         </h1>
                         <p className="text-slate-300 text-lg font-medium">
-                            Read and share blogs from writers around the world
+                            {user ? 'Ready to read and share amazing blogs today?' : 'Read and share blogs from writers around the world'}
                         </p>
                     </div>
                     <button

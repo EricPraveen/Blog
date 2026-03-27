@@ -31,7 +31,16 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/api/posts/drafts",
+                                "/api/users/profile",
+                                "/api/users/password"
+                        ).authenticated()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(
                                 "/api/auth/**",
+                                "/error"
+                        ).permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET,
                                 "/api/posts",
                                 "/api/posts/genre/**",
                                 "/api/posts/search",
@@ -39,10 +48,11 @@ public class SecurityConfig {
                                 "/api/posts/random",
                                 "/api/posts/featured",
                                 "/api/posts/{id}",
-                                "/api/users/**",
-                                "/error"
+                                "/api/users/{id}",
+                                "/api/users/{id}/posts"
                         ).permitAll()
                         .anyRequest().authenticated()
+
                 )
                 .addFilterBefore(jwtFilter,
                         UsernamePasswordAuthenticationFilter.class);

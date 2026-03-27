@@ -57,7 +57,11 @@ export default function WritePost() {
     const handleSaveDraft = async () => {
         setLoading(true)
         try {
-            await createPost({ ...form, status: 'draft' })
+            if (editId) {
+                await updatePost(editId, { ...form, status: 'draft' })
+            } else {
+                await createPost({ ...form, status: 'draft' })
+            }
             navigate('/')
         } catch (err) {
             setError('Failed to save draft')
@@ -90,6 +94,14 @@ export default function WritePost() {
                 <div className="glass p-8 md:p-12 rounded-3xl relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-fuchsia-500 via-purple-500 to-indigo-500 opacity-90"></div>
                     
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="absolute top-6 right-6 md:top-8 md:right-8 text-slate-400 hover:text-white transition bg-slate-800/50 hover:bg-slate-700 rounded-full w-10 h-10 flex items-center justify-center border border-white/10"
+                        title="Close without saving">
+                        ✕
+                    </button>
+
                     <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-8 tracking-tight">
                         {editId ? 'Edit Post' : 'Write a Story'}
                     </h1>

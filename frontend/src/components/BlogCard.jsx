@@ -50,9 +50,17 @@ export default function BlogCard({ post, onDelete, isOwner }) {
                 {post.content.replace(/<[^>]+>/g, '')}
             </p>
             <div className="flex justify-between items-center">
-                <span className="text-xs text-indigo-400 font-medium truncate pr-2">
-                    By {post.isAnonymous ? 'Anonymous' : post.authorName}
-                </span>
+                {post.isAnonymous ? (
+            <span className="text-xs text-indigo-400 font-medium truncate pr-2">
+                By Anonymous
+            </span>
+            ) : (
+            <Link
+                to={`/user/${post.authorId}`}
+                className="text-xs text-indigo-400 font-medium truncate pr-2 hover:text-fuchsia-400 transition-colors">
+                By {post.authorName}
+            </Link>
+            )}
                 <div className="flex items-center gap-3">
                     {isAuthor && (
                         <button

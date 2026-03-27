@@ -20,7 +20,7 @@ export default function Navbar() {
                 {user ? (
                     <>
                         <Link to="/write" className="btn-gradient text-sm">
-                            Write Post
+                            ✍️ Write Post
                         </Link>
                         <Link to="/bookmarks" className="text-slate-300 hover:text-indigo-400 text-sm font-medium transition-colors">
                             Bookmarks
