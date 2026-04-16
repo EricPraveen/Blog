@@ -5,6 +5,7 @@ import BlogCard from '../components/BlogCard'
 import { getUserById } from '../services/userService'
 import { getPostsByUserId } from '../services/postService'
 import { useAuth } from '../context/AuthContext'
+import { getGenreColor } from '../utils/genreColors'
 
 const countryFlags = {
     'Afghanistan': '🇦🇫', 'Albania': '🇦🇱', 'Algeria': '🇩🇿', 'Andorra': '🇦🇩', 'Angola': '🇦🇴',
@@ -36,17 +37,20 @@ const countryFlags = {
     'Pakistan': '🇵🇰', 'Palau': '🇵🇼', 'Palestine State': '🇵🇸', 'Panama': '🇵🇦', 'Papua New Guinea': '🇵🇬',
     'Paraguay': '🇵🇾', 'Peru': '🇵🇪', 'Philippines': '🇵🇭', 'Poland': '🇵🇱', 'Portugal': '🇵🇹',
     'Qatar': '🇶🇦', 'Romania': '🇷🇴', 'Russia': '🇷🇺', 'Rwanda': '🇷🇼', 'Saint Kitts and Nevis': '🇰🇳',
-    'Saint Lucia': '🇱🇨', 'Saint Vincent and the Grenadines': '🇻🇨', 'Samoa': '🇼🇸', 'San Marino': '🇸🇲', 'Sao Tome and Principe': '🇸🇹',
-    'Saudi Arabia': '🇸🇦', 'Senegal': '🇸🇳', 'Serbia': '🇷🇸', 'Seychelles': '🇸🇨', 'Sierra Leone': '🇸🇱',
-    'Singapore': '🇸🇬', 'Slovakia': '🇸🇰', 'Slovenia': '🇸🇮', 'Solomon Islands': '🇸🇧', 'Somalia': '🇸🇴',
-    'South Africa': '🇿🇦', 'South Korea': '🇰🇷', 'South Sudan': '🇸🇸', 'Spain': '🇪🇸', 'Sri Lanka': '🇱🇰',
-    'Sudan': '🇸🇩', 'Suriname': '🇸🇷', 'Sweden': '🇸🇪', 'Switzerland': '🇨🇭', 'Syria': '🇸🇾',
-    'Tajikistan': '🇹🇯', 'Tanzania': '🇹🇿', 'Thailand': '🇹🇭', 'Timor-Leste': '🇹🇱', 'Togo': '🇹🇬',
-    'Tonga': '🇹🇴', 'Trinidad and Tobago': '🇹🇹', 'Tunisia': '🇹🇳', 'Turkey': '🇹🇷', 'Turkmenistan': '🇹🇲',
-    'Tuvalu': '🇹🇻', 'Uganda': '🇺🇬', 'Ukraine': '🇺🇦', 'United Arab Emirates': '🇦🇪', 'United Kingdom': '🇬🇧',
-    'United States': '🇺🇸', 'Uruguay': '🇺🇾', 'Uzbekistan': '🇺🇿', 'Vanuatu': '🇻🇺', 'Venezuela': '🇻🇪',
-    'Vietnam': '🇻🇳', 'Yemen': '🇾🇪', 'Zambia': '🇿🇲', 'Zimbabwe': '🇿🇼',
+    'Saint Lucia': '🇱🇨', 'Saint Vincent and the Grenadines': '🇻🇨', 'Samoa': '🇼🇸', 'San Marino': '🇸🇲',
+    'Sao Tome and Principe': '🇸🇹', 'Saudi Arabia': '🇸🇦', 'Senegal': '🇸🇳', 'Serbia': '🇷🇸',
+    'Seychelles': '🇸🇨', 'Sierra Leone': '🇸🇱', 'Singapore': '🇸🇬', 'Slovakia': '🇸🇰', 'Slovenia': '🇸🇮',
+    'Solomon Islands': '🇸🇧', 'Somalia': '🇸🇴', 'South Africa': '🇿🇦', 'South Korea': '🇰🇷',
+    'South Sudan': '🇸🇸', 'Spain': '🇪🇸', 'Sri Lanka': '🇱🇰', 'Sudan': '🇸🇩', 'Suriname': '🇸🇷',
+    'Sweden': '🇸🇪', 'Switzerland': '🇨🇭', 'Syria': '🇸🇾', 'Tajikistan': '🇹🇯', 'Tanzania': '🇹🇿',
+    'Thailand': '🇹🇭', 'Timor-Leste': '🇹🇱', 'Togo': '🇹🇬', 'Tonga': '🇹🇴', 'Trinidad and Tobago': '🇹🇹',
+    'Tunisia': '🇹🇳', 'Turkey': '🇹🇷', 'Turkmenistan': '🇹🇲', 'Tuvalu': '🇹🇻', 'Uganda': '🇺🇬',
+    'Ukraine': '🇺🇦', 'United Arab Emirates': '🇦🇪', 'United Kingdom': '🇬🇧', 'United States': '🇺🇸',
+    'Uruguay': '🇺🇾', 'Uzbekistan': '🇺🇿', 'Vanuatu': '🇻🇺', 'Venezuela': '🇻🇪', 'Vietnam': '🇻🇳',
+    'Yemen': '🇾🇪', 'Zambia': '🇿🇲', 'Zimbabwe': '🇿🇼',
 }
+
+const genres = ['All', 'Technology', 'Travel', 'Food', 'Lifestyle', 'Fiction', 'Opinion', 'Health', 'Finance', 'Gaming', 'Culture', 'Else']
 
 export default function UserProfile() {
     const { id } = useParams()
@@ -54,13 +58,20 @@ export default function UserProfile() {
     const navigate = useNavigate()
     const [profileUser, setProfileUser] = useState(null)
     const [posts, setPosts] = useState([])
+    const [filteredPosts, setFilteredPosts] = useState([])
     const [loading, setLoading] = useState(true)
     const [postsLoading, setPostsLoading] = useState(true)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [selectedGenre, setSelectedGenre] = useState('All')
 
     useEffect(() => {
         loadUser()
         loadPosts()
     }, [id])
+
+    useEffect(() => {
+        filterPosts()
+    }, [posts, searchQuery, selectedGenre])
 
     const loadUser = async () => {
         try {
@@ -77,11 +88,39 @@ export default function UserProfile() {
         try {
             const data = await getPostsByUserId(id)
             setPosts(data)
+            setFilteredPosts(data)
         } catch (err) {
             console.error(err)
         } finally {
             setPostsLoading(false)
         }
+    }
+
+    const filterPosts = () => {
+        let result = [...posts]
+
+        if (selectedGenre !== 'All') {
+            result = result.filter(p => p.genre === selectedGenre)
+        }
+
+        if (searchQuery.trim()) {
+            result = result.filter(p =>
+                p.title.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+        }
+
+        setFilteredPosts(result)
+    }
+
+    const handleSearch = (e) => {
+        e.preventDefault()
+        filterPosts()
+    }
+
+    const handleClearFilters = () => {
+        setSearchQuery('')
+        setSelectedGenre('All')
+        setFilteredPosts(posts)
     }
 
     const getJoinedDate = (dateStr) => {
@@ -93,6 +132,8 @@ export default function UserProfile() {
     }
 
     const isOwnProfile = currentUser && String(currentUser.id) === String(id)
+    const isFiltered = searchQuery.trim() || selectedGenre !== 'All'
+    const availableGenres = genres
 
     if (loading) return (
         <div className="flex-1 w-full">
@@ -139,8 +180,9 @@ export default function UserProfile() {
                             {profileUser.name?.charAt(0).toUpperCase()}
                         </div>
 
-                        {/* Info */}
+                        {/* Info - Restructured for consistency */}
                         <div className="flex-1">
+                            {/* Name and Badge */}
                             <div className="flex flex-wrap items-center gap-3 mb-2">
                                 <h1 className="text-3xl font-extrabold text-white tracking-tight">
                                     {profileUser.name}
@@ -152,44 +194,50 @@ export default function UserProfile() {
                                 )}
                             </div>
 
-                            {profileUser.username && (
-                                <p className="text-indigo-400 font-medium mb-3">
-                                    @{profileUser.username}
-                                </p>
-                            )}
+                            {/* Username */}
+                            <p className="text-indigo-400 font-medium mb-3">
+                                @{profileUser.username || 'anonymous'}
+                            </p>
 
-                            {profileUser.bio && (
-                                <p className="text-slate-300 text-sm leading-relaxed mb-4 max-w-xl">
-                                    {profileUser.bio}
-                                </p>
-                            )}
+                            {/* Bio */}
+                            <p className="text-slate-300 text-sm leading-relaxed mb-4 max-w-xl min-h-[3rem]">
+                                {profileUser.bio || <span className="text-slate-500 italic">No bio added yet</span>}
+                            </p>
 
-                            {/* Stats Row */}
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400">
+                            {/* Stats Grid - Always Displayed */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
                                 {profileUser.country && (
-                                    <span className="flex items-center gap-1">🌍
-                                        {countryFlags[profileUser.country] || '🌍'}
-                                        {profileUser.country}
-                                    </span>
+                                    <div className="flex flex-col">
+                                        <span className="text-xs text-slate-500 font-medium mb-1">Location</span>
+                                        <span className="text-sm text-slate-300">
+                                            {profileUser.country}
+                                        </span>
+                                    </div>
                                 )}
-                                <span className="flex items-center gap-1">
-                                    📅 Joined {getJoinedDate(profileUser.createdAt)}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                    📝 {posts.length} {posts.length === 1 ? 'post' : 'posts'}
-                                </span>
+                                <div className="flex flex-col">
+                                    <span className="text-xs text-slate-500 font-medium mb-1">Joined</span>
+                                    <span className="text-sm text-slate-300">
+                                        {getJoinedDate(profileUser.createdAt)}
+                                    </span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-xs text-slate-500 font-medium mb-1">Posts</span>
+                                    <span className="text-sm text-slate-300">
+                                        {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
                         {/* Action Buttons */}
                         <div className="flex gap-3 shrink-0">
-                            {isOwnProfile ? (
+                            {isOwnProfile && (
                                 <button
                                     onClick={() => navigate('/edit-profile')}
                                     className="text-sm px-5 py-2 rounded-full border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/20 transition-colors">
                                     ✏️ Edit Profile
                                 </button>
-                            ) : null}
+                            )}
                         </div>
                     </div>
                 </div>
@@ -202,6 +250,61 @@ export default function UserProfile() {
                             {isOwnProfile ? 'My Posts' : `Posts by ${profileUser.name}`}
                         </h2>
                     </div>
+
+                    {/* Search and Filter */}
+                    {!postsLoading && posts.length > 0 && (
+                        <div className="glass p-4 rounded-2xl mb-6 flex flex-col gap-4">
+
+                            {/* Search Bar */}
+                            <form onSubmit={handleSearch} className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search posts by title..."
+                                    className="flex-1 glass-input py-2.5 text-sm"
+                                />
+                                <button
+                                    type="submit"
+                                    className="btn-gradient px-5 py-2.5 text-sm">
+                                    🔍 Search
+                                </button>
+                                {isFiltered && (
+                                    <button
+                                        type="button"
+                                        onClick={handleClearFilters}
+                                        className="px-4 py-2.5 rounded-xl border border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-colors text-sm">
+                                        ✕ Clear
+                                    </button>
+                                )}
+                            </form>
+
+                            {/* Genre Filter */}
+                            <div className="flex flex-wrap gap-2">
+                                {availableGenres.map(genre => (
+                                    <button
+                                        key={genre}
+                                        onClick={() => setSelectedGenre(genre)}
+                                        className={`text-xs px-3 py-1.5 rounded-full border transition-all font-medium
+                                            ${selectedGenre === genre
+                                                ? 'bg-indigo-500/30 text-indigo-300 border-indigo-500/50'
+                                                : `${genre !== 'All' ? getGenreColor(genre) : 'text-slate-400 border-white/10'} hover:border-white/20`
+                                            }`}>
+                                        {genre}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Filter Results Count */}
+                            {isFiltered && (
+                                <p className="text-xs text-slate-400">
+                                    Showing {filteredPosts.length} of {posts.length} posts
+                                    {searchQuery && ` for "${searchQuery}"`}
+                                    {selectedGenre !== 'All' && ` in ${selectedGenre}`}
+                                </p>
+                            )}
+                        </div>
+                    )}
 
                     {postsLoading ? (
                         <div className="flex flex-col items-center justify-center py-20 opacity-70">
@@ -229,15 +332,31 @@ export default function UserProfile() {
                                 </button>
                             )}
                         </div>
+                    ) : filteredPosts.length === 0 ? (
+                        <div className="glass-card text-center py-20 flex flex-col items-center">
+                            <span className="text-6xl mb-4 opacity-50">🔍</span>
+                            <h3 className="text-xl font-bold text-slate-200 mb-2">
+                                No posts found
+                            </h3>
+                            <p className="text-slate-400 mb-4">
+                                Try adjusting your search or filter
+                            </p>
+                            <button
+                                onClick={handleClearFilters}
+                                className="btn-gradient px-6 py-2 text-sm">
+                                Clear Filters
+                            </button>
+                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {posts.map(post => (
+                            {filteredPosts.map(post => (
                                 <BlogCard
                                     key={post.id}
                                     post={post}
-                                    onDelete={(deletedId) => setPosts(
-                                        posts.filter(p => String(p.id) !== String(deletedId))
-                                    )}
+                                    onDelete={(deletedId) => {
+                                        setPosts(posts.filter(p => String(p.id) !== String(deletedId)))
+                                        setFilteredPosts(filteredPosts.filter(p => String(p.id) !== String(deletedId)))
+                                    }}
                                 />
                             ))}
                         </div>
