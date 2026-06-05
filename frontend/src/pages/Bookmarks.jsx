@@ -57,8 +57,8 @@ export default function Bookmarks() {
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {bookmarks.map(bookmark => (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {bookmarks.filter(b => b.post != null).map(bookmark => (
                             <BlogCard key={bookmark.id} post={bookmark.post} />
                         ))}
                     </div>

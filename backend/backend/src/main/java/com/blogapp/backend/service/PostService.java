@@ -2,6 +2,7 @@ package com.blogapp.backend.service;
 
 import com.blogapp.backend.dto.PostRequest;
 import com.blogapp.backend.dto.PostResponse;
+import com.blogapp.backend.model.Like;
 import com.blogapp.backend.model.Post;
 import com.blogapp.backend.model.User;
 import com.blogapp.backend.repository.LikeRepository;
@@ -116,6 +117,32 @@ public class PostService {
         }
         postRepository.delete(post);
     }
+
+    public void toggleLike(Long postId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        likeRepository.findByPostIdAndUserId(postId, user.getId())
+                .ifPresentOrElse(
+                        like -> likeRepository.delete(like),
+                        () -> {
+                            Like like = new Like();
+                            like.setPost(post);
+                            like.setUser(user);
+                            likeRepository.save(like);
+                        }
+                );
+    }
+
+    public boolean checkLikeStatus(Long postId, String email) {
+        if (email == null) return false;
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) return false;
+        return likeRepository.findByPostIdAndUserId(postId, user.getId()).isPresent();
+    }
+
     public List<PostResponse> getPostsByUserId(Long userId) {
         return postRepository.findByAuthorIdAndStatus(userId, "published")
                 .stream().map(this::mapToResponse)

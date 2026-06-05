@@ -26,6 +26,17 @@ export default function PostDetail() {
             const data = await getPostById(id)
             setPost(data)
             setLikeCount(data.likeCount)
+            
+            if (user) {
+                try {
+                    const likeRes = await axios.get(`http://localhost:8080/api/posts/${id}/like-status`, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                    });
+                    setLiked(likeRes.data);
+                } catch (likeErr) {
+                    console.error("Failed to fetch like status:", likeErr);
+                }
+            }
         } catch (err) {
             console.error(err)
         } finally {

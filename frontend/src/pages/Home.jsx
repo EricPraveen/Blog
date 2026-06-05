@@ -118,7 +118,7 @@ export default function Home() {
                                 Featured Posts
                             </h2>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {featured.map(post => (
                                 <BlogCard key={post.id} post={post} />
                             ))}
@@ -152,7 +152,7 @@ export default function Home() {
                         <p className="text-slate-400">Try adjusting your search or genre filters.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {posts.map(post => (
                             <BlogCard
                                 key={post.id}

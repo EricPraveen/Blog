@@ -37,10 +37,8 @@ export default function WritePost() {
 
     const [form, setForm] = useState({
         title: '',
-        coverImage: '',
         genre: 'Technology',
         status: 'published',
-        isAnonymous: false
     })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
@@ -76,10 +74,8 @@ export default function WritePost() {
             const data = await getPostById(editId)
             setForm({
                 title: data.title,
-                coverImage: data.coverImage || '',
                 genre: data.genre,
                 status: data.status,
-                isAnonymous: data.isAnonymous
             })
             if (editor && data.content) {
                 editor.commands.setContent(data.content)
@@ -186,38 +182,20 @@ export default function WritePost() {
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Cover Image */}
-                            <div>
-                                <label className="text-sm font-semibold text-slate-300 mb-2 block">
-                                    Cover Image URL
-                                    <span className="text-slate-500 font-normal"> (optional)</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    name="coverImage"
-                                    value={form.coverImage}
-                                    onChange={handleChange}
-                                    placeholder="https://example.com/image.jpg"
-                                    className="w-full glass-input py-3"
-                                />
-                            </div>
-
-                            {/* Genre */}
-                            <div>
-                                <label className="text-sm font-semibold text-slate-300 mb-2 block">
-                                    Genre
-                                </label>
-                                <select
-                                    name="genre"
-                                    value={form.genre}
-                                    onChange={handleChange}
-                                    className="w-full glass-input py-3 cursor-pointer [&>option]:bg-slate-800">
-                                    {genres.map(g => (
-                                        <option key={g} value={g}>{g}</option>
-                                    ))}
-                                </select>
-                            </div>
+                        {/* Genre */}
+                        <div>
+                            <label className="text-sm font-semibold text-slate-300 mb-2 block">
+                                Genre
+                            </label>
+                            <select
+                                name="genre"
+                                value={form.genre}
+                                onChange={handleChange}
+                                className="w-full glass-input py-3 cursor-pointer [&>option]:bg-slate-800">
+                                {genres.map(g => (
+                                    <option key={g} value={g}>{g}</option>
+                                ))}
+                            </select>
                         </div>
 
                         {/* TipTap Editor */}
@@ -339,20 +317,7 @@ export default function WritePost() {
                             </div>
                         </div>
 
-                        {/* Anonymous */}
-                        <div className="flex items-center gap-3 bg-slate-800/50 p-4 rounded-xl border border-white/10 w-max">
-                            <input
-                                type="checkbox"
-                                name="isAnonymous"
-                                id="isAnonymous"
-                                checked={form.isAnonymous}
-                                onChange={handleChange}
-                                className="w-5 h-5 rounded text-indigo-500 cursor-pointer bg-slate-700 border-white/10"
-                            />
-                            <label htmlFor="isAnonymous" className="text-sm font-medium text-slate-300 cursor-pointer select-none">
-                                Post anonymously
-                            </label>
-                        </div>
+
 
                         {/* Buttons */}
                         <div className="flex flex-wrap gap-4 mt-4 pt-6 border-t border-white/10">

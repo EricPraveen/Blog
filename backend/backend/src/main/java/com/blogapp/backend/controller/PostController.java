@@ -58,6 +58,21 @@ public class PostController {
             Authentication authentication) {
         return ResponseEntity.ok(postService.createPost(request, authentication.getName()));
     }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<String> toggleLike(@PathVariable Long id, Authentication authentication) {
+        postService.toggleLike(id, authentication.getName());
+        return ResponseEntity.ok("Like toggled successfully");
+    }
+
+    @GetMapping("/{id}/like-status")
+    public ResponseEntity<Boolean> checkLikeStatus(@PathVariable Long id, Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.ok(false);
+        }
+        return ResponseEntity.ok(postService.checkLikeStatus(id, authentication.getName()));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long id,
